@@ -1,12 +1,22 @@
 import {Link, withRouter} from 'react-router-dom'
+import {useState} from 'react'
 import Cookies from 'js-cookie'
+import {FaSearch} from 'react-icons/fa'
 import './index.css'
+import {PrimaryButton} from '../Extras'
 
 const Header = props => {
   const logout = () => {
     Cookies.remove('jwt_token')
     const {history} = props
     history.replace('/login')
+  }
+
+  const [searchValue, setSearchValue] = useState('')
+
+  const onChangeSearchCaption = event => {
+    // console.log(event.target.value)
+    setSearchValue(event.target.value)
   }
 
   return (
@@ -22,7 +32,39 @@ const Header = props => {
         </Link>
       </div>
       <div className="header-options-bg-container">
-        <h1>hello</h1>
+        <ul className="options-list-for-large-devices">
+          <li className="option-item-container search-element-container">
+            <input
+              type="search"
+              className="search-input-element"
+              placeholder="Search Caption"
+              value={searchValue}
+              onChange={onChangeSearchCaption}
+            />
+            <button className="search-button" type="button">
+              <FaSearch className="search-icon" />
+            </button>
+          </li>
+          <li className="option-item-container">
+            <Link className="link-container" to="/">
+              <p className="option-text">Home</p>
+            </Link>
+          </li>
+          <li className="option-item-container">
+            <Link className="link-container" to="/profile">
+              <p className="option-text">Profile</p>
+            </Link>
+          </li>
+          <li className="option-item-container">
+            <PrimaryButton
+              type="button"
+              className="header-logout-button"
+              actionOnClick={logout}
+            >
+              Logout
+            </PrimaryButton>
+          </li>
+        </ul>
       </div>
     </nav>
   )
