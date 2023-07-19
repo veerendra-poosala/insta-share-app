@@ -120,6 +120,9 @@
   font-weight: 500;
   line-height: 18px; /* 128.571% */
 }
+.active-option {
+  color: #4094ef;
+}
 .header-logout-button {
   width: 86px;
   height: 32px !important;

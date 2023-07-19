@@ -2,6 +2,7 @@ import {Component} from 'react'
 import {Redirect} from 'react-router-dom'
 
 import Cookies from 'js-cookie'
+import {PrimaryButton} from '../Extras/index'
 
 import './index.css'
 
@@ -124,9 +125,12 @@ class Login extends Component {
                 {showErrorMsg && <p className="error-msg">{errorMsg} </p>}
               </div>
               <div className="form-field-container">
+                <PrimaryButton type="submit">Login</PrimaryButton>
+                {/* 
                 <button type="submit" className="login-button">
                   <p className="button-text">Login</p>
                 </button>
+                */}
               </div>
             </div>
           </form>

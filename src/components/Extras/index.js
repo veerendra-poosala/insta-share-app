@@ -15,7 +15,7 @@ export const PrimaryButton = props => {
     <button
       className={styling}
       type={type === 'submit' ? 'submit' : 'button'}
-      onClick={callActionOnClick}
+      onClick={actionOnClick !== undefined ? callActionOnClick : null}
     >
       <p className="button-text">{children}</p>
     </button>

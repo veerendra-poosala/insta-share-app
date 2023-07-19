@@ -1,9 +1,15 @@
-import {Link, withRouter} from 'react-router-dom'
-import {useState} from 'react'
+import {Link, withRouter, useLocation} from 'react-router-dom'
+import {useState, useEffect} from 'react'
 import Cookies from 'js-cookie'
 import {FaSearch} from 'react-icons/fa'
+import {v4 as uuidv4} from 'uuid'
 import './index.css'
 import {PrimaryButton} from '../Extras'
+
+const options = {
+  home: 'Home',
+  profile: 'Profile',
+}
 
 const Header = props => {
   const logout = () => {
@@ -12,12 +18,30 @@ const Header = props => {
     history.replace('/login')
   }
 
+  const location = useLocation()
   const [searchValue, setSearchValue] = useState('')
+  const [activeOption, setActiveOption] = useState('')
 
   const onChangeSearchCaption = event => {
     // console.log(event.target.value)
     setSearchValue(event.target.value)
   }
+
+  const onClickSetActiveOption = event => {
+    const selectedOption = event.target.textContent
+    setActiveOption(selectedOption)
+  }
+
+  useEffect(() => {
+    const path = location.pathname
+    if (path === '/') {
+      setActiveOption(options.home)
+    } else if (path === '/profile') {
+      setActiveOption(options.profile)
+    } else {
+      setActiveOption('')
+    }
+  }, [location.pathname])
 
   return (
     <nav className="header-nav-container">
@@ -46,13 +70,37 @@ const Header = props => {
             </button>
           </li>
           <li className="option-item-container">
-            <Link className="link-container" to="/">
-              <p className="option-text">Home</p>
+            <Link
+              onClick={onClickSetActiveOption}
+              className="link-container"
+              to="/"
+            >
+              <p
+                className={
+                  activeOption === options.home
+                    ? 'option-text active-option'
+                    : 'option-text'
+                }
+              >
+                {options.home}
+              </p>
             </Link>
           </li>
           <li className="option-item-container">
-            <Link className="link-container" to="/profile">
-              <p className="option-text">Profile</p>
+            <Link
+              onClick={onClickSetActiveOption}
+              className="link-container"
+              to="/profile"
+            >
+              <p
+                className={
+                  activeOption === options.profile
+                    ? 'option-text active-option'
+                    : 'option-text'
+                }
+              >
+                {options.profile}
+              </p>
             </Link>
           </li>
           <li className="option-item-container">
