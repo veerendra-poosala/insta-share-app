@@ -1,0 +1,22 @@
+.home-bg-container {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+  .home-bg-container {
+    padding-left: 200px;
+    padding-right: 200px;
+  }
+}
+
+.stories-bg-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  margin-top: 16px;
+}

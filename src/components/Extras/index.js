@@ -1,3 +1,4 @@
+import Loader from 'react-loader-spinner'
 import './index.css'
 import '../Header/index.css'
 
@@ -22,4 +23,14 @@ export const PrimaryButton = props => {
   )
 }
 
-export const Defalut = {}
+export const RenderLoader = props => {
+  const {isLoading} = props
+
+  return (
+    isLoading && (
+      <div className="loader-container" data-testid="loader">
+        <Loader type="TailSpin" color="#4094EF" height={50} width={50} />
+      </div>
+    )
+  )
+}
