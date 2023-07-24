@@ -1,14 +1,14 @@
 .home-bg-container {
   display: flex;
   flex-direction: column;
-
   width: 100%;
+  max-width: 1200px;
 }
 
 @media screen and (min-width: 768px) {
   .home-bg-container {
     padding-left: 200px;
-    padding-right: 200px;
+    padding-right: 100px;
   }
 }
 
@@ -19,4 +19,19 @@
   width: 100%;
   justify-content: center;
   margin-top: 16px;
+}
+.loader-bg-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 30vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.posts-bg-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-left: 0px;
 }

@@ -1,15 +1,14 @@
 import Cookies from 'js-cookie'
 import {Redirect} from 'react-router-dom'
 import Header from '../Header/index'
+import ProfileDetails from '../ProfileDetails'
 
 const Profile = props => {
-  const jwtToken = Cookies.get('jwt_token')
-  if (jwtToken === undefined) {
-    return <Redirect to="/login" />
-  }
+  console.log(props)
   return (
     <>
-      <Header /> <h1>Profile</h1>{' '}
+      <Header />
+      <ProfileDetails />
     </>
   )
 }

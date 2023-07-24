@@ -7,6 +7,7 @@ import Header from '../Header/index'
 import {RenderLoader} from '../Extras'
 import ReactSlick from '../ReactSlick'
 import './index.css'
+import PostDetails from '../PostDetails'
 
 const apiStatusConstants = {
   initial: 'INITIAL',
@@ -19,11 +20,13 @@ class Home extends Component {
   state = {
     isLoading: false,
     apiStatus: apiStatusConstants.initial,
-    userStories: '',
+    userStories: [],
+    userPosts: [],
   }
 
   componentDidMount() {
     this.fetchUserStories()
+    this.fetchUserPosts()
   }
 
   fetchUserStories = async () => {
@@ -60,6 +63,48 @@ class Home extends Component {
     }
   }
 
+  fetchUserPosts = async () => {
+    try {
+      this.setState({isLoading: true, apiStatus: apiStatusConstants.inProgress})
+      const token = Cookies.get('jwt_token')
+      const url = 'https://apis.ccbp.in/insta-share/posts'
+      const options = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        method: 'GET',
+      }
+      const response = await fetch(url, options)
+      const data = await response.json()
+
+      if (response.ok) {
+        const modifiedUserPosts = data?.posts?.map(eachPost => ({
+          comments: eachPost.comments,
+          createdAt: eachPost.created_at,
+          likesCount: eachPost.likes_count,
+          postDetails: eachPost.post_details,
+          postId: eachPost.post_id,
+          profilePic: eachPost.profile_pic,
+          userId: eachPost.user_id,
+          userName: eachPost.user_name,
+        }))
+
+        this.setState({
+          userPosts: [...modifiedUserPosts],
+          apiStatus: apiStatusConstants.success,
+          isLoading: false,
+        })
+      } else {
+        this.setState({isLoading: false, apiStatus: apiStatusConstants.failure})
+      }
+    } catch (e) {
+      this.setState({isLoading: false, apiStatus: apiStatusConstants.failure})
+      console.log('user stories fetch error', e)
+    } finally {
+      this.setState({isLoading: false})
+    }
+  }
+
   renderStories = () => {
     const {userStories, isLoading} = this.state
     return (
@@ -79,11 +124,46 @@ class Home extends Component {
     )
   }
 
+  renderUserPosts = () => {
+    const {userPosts, apiStatus, isLoading} = this.state
+
+    switch (apiStatus) {
+      case apiStatusConstants.inProgress:
+        return (
+          isLoading && (
+            <div className="loader-bg-container">
+              <RenderLoader isLoading={isLoading} />
+            </div>
+          )
+        )
+      case apiStatusConstants.success:
+        return (
+          <ul className="posts-bg-container">
+            {userPosts.map(eachPostDetails => (
+              <PostDetails
+                key={eachPostDetails.postId}
+                eachPostDetails={eachPostDetails}
+              />
+            ))}
+          </ul>
+        )
+      case apiStatusConstants.failure:
+        return <h1>Failure</h1>
+      default:
+        return null
+    }
+  }
+
   render() {
+    const {userPosts} = this.state
+    // console.log(userPosts)
     return (
       <>
         <Header />
-        <div className="home-bg-container">{this.renderStories()}</div>
+        <div className="home-bg-container">
+          {this.renderStories()}
+          {this.renderUserPosts()}
+        </div>
       </>
     )
   }
