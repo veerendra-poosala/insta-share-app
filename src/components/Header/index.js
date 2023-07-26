@@ -1,13 +1,13 @@
 import {Link, withRouter, useLocation} from 'react-router-dom'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
 import Cookies from 'js-cookie'
 import {FaSearch} from 'react-icons/fa'
 import {FiMenu} from 'react-icons/fi'
 import {AiFillCloseCircle} from 'react-icons/ai'
-// import {v4 as uuidv4} from 'uuid'
 import Popup from 'reactjs-popup'
 import 'reactjs-popup/dist/index.css'
 import './index.css'
+import UserPostsContext from '../../context/UserPostsContext'
 import {PrimaryButton} from '../Extras'
 
 const apiStatusConstants = {
@@ -37,19 +37,24 @@ const Header = props => {
   const [modalMenuOptions, setModalMenuOptions] = useState(
     location.pathname === '/' ? menuOptions.home : menuOptions.profile,
   )
-  const [isLoading, setIsLoading] = useState(false)
-  const [apiStatus, setApiStatus] = useState(apiStatusConstants.initial)
-  const [userPosts, setUserPosts] = useState([])
 
   const onChangeSearchCaption = event => {
-    // console.log(event.target.value)
     setSearchInput(event.target.value)
   }
 
+  const {
+    userPosts,
+    updateUserPosts,
+    isLoading,
+    updateIsLoading,
+    apiStatus,
+    updateApiStatus,
+  } = useContext(UserPostsContext)
+
   const fetchUserPosts = async () => {
     try {
-      setIsLoading({isLoading: true})
-      setApiStatus({apiStatus: apiStatusConstants.inProgress})
+      updateIsLoading(true)
+      updateApiStatus(apiStatusConstants.inProgress)
       const token = Cookies.get('jwt_token')
       const url = `https://apis.ccbp.in/insta-share/posts?search=${searchInput}`
       const options = {
@@ -58,6 +63,7 @@ const Header = props => {
         },
         method: 'GET',
       }
+
       const response = await fetch(url, options)
       const data = await response.json()
 
@@ -73,26 +79,16 @@ const Header = props => {
           userName: eachPost.user_name,
         }))
 
-        console.log('user posts', modifiedUserPosts)
-        setUserPosts({
-          userPosts: [...modifiedUserPosts],
-        })
-
-        setApiStatus({apiStatus: apiStatusConstants.success})
-
-        setIsLoading({isLoading: false})
+        updateUserPosts([...modifiedUserPosts])
+        updateApiStatus(apiStatusConstants.success)
       } else {
-        setApiStatus({apiStatus: apiStatusConstants.failure})
-
-        setIsLoading({isLoading: false})
+        updateApiStatus(apiStatusConstants.failure)
       }
     } catch (e) {
-      setApiStatus({apiStatus: apiStatusConstants.failure})
-
-      setIsLoading({isLoading: false})
-      console.log('user stories fetch error', e)
+      updateApiStatus(apiStatusConstants.failure)
+      console.log('user posts fetch error', e)
     } finally {
-      setIsLoading({isLoading: false})
+      updateIsLoading(false)
     }
   }
 

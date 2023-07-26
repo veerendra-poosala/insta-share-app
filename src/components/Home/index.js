@@ -1,13 +1,12 @@
+import React, {useEffect, useContext, useState} from 'react'
 import Cookies from 'js-cookie'
-import {Component} from 'react'
 import {Link} from 'react-router-dom'
-import Slider from 'react-slick'
-import Header from '../Header/index'
 import {RenderLoader, PrimaryButton} from '../Extras'
 import ReactSlick from '../ReactSlick'
 import './index.css'
+import Header from '../Header'
 import PostDetails from '../PostDetails'
-import '../Profile/index.css'
+import UserPostsContext from '../../context/UserPostsContext'
 
 export const apiStatusConstants = {
   initial: 'INITIAL',
@@ -16,22 +15,21 @@ export const apiStatusConstants = {
   failure: 'FAILURE',
 }
 
-class Home extends Component {
-  state = {
-    isLoading: false,
-    apiStatus: apiStatusConstants.initial,
-    userStories: [],
-    userPosts: [],
-  }
+const Home = () => {
+  const [userStories, updateUserStories] = useState([])
+  const {
+    userPosts,
+    updateUserPosts,
+    isLoading,
+    updateIsLoading,
+    apiStatus,
+    updateApiStatus,
+  } = useContext(UserPostsContext)
 
-  componentDidMount() {
-    this.fetchUserStories()
-    this.fetchUserPosts()
-  }
-
-  fetchUserStories = async () => {
+  // Fetch user stories function
+  const fetchUserStories = async () => {
     try {
-      this.setState({isLoading: true})
+      updateIsLoading(true)
       const token = Cookies.get('jwt_token')
       const url = 'https://apis.ccbp.in/insta-share/stories'
       const options = {
@@ -40,32 +38,36 @@ class Home extends Component {
         },
         method: 'GET',
       }
+
       const response = await fetch(url, options)
       const data = await response.json()
+
       if (response.ok) {
         const modifiedUserStories = data?.users_stories?.map(story => ({
           storyUrl: story?.story_url,
           userId: story?.user_id,
           userName: story?.user_name,
         }))
-        this.setState({
-          userStories: [...modifiedUserStories],
-          isLoading: false,
-        })
+
+        // Update user stories in the context
+        // Assuming you have the relevant function to update userStories in your context.
+        updateUserStories([...modifiedUserStories])
+        updateIsLoading(false)
       } else {
-        this.setState({isLoading: false})
+        updateIsLoading(false)
       }
     } catch (e) {
-      this.setState({isLoading: false})
+      updateIsLoading(false)
       console.log('user stories fetch error', e)
-    } finally {
-      this.setState({isLoading: false})
     }
   }
 
-  fetchUserPosts = async () => {
+  // Fetch user posts function
+  const fetchUserPosts = async () => {
     try {
-      this.setState({isLoading: true, apiStatus: apiStatusConstants.inProgress})
+      updateIsLoading(true)
+      updateApiStatus(apiStatusConstants.inProgress)
+
       const token = Cookies.get('jwt_token')
       const url = 'https://apis.ccbp.in/insta-share/posts'
       const options = {
@@ -74,6 +76,7 @@ class Home extends Component {
         },
         method: 'GET',
       }
+
       const response = await fetch(url, options)
       const data = await response.json()
 
@@ -89,44 +92,44 @@ class Home extends Component {
           userName: eachPost.user_name,
         }))
 
-        this.setState({
-          userPosts: [...modifiedUserPosts],
-          apiStatus: apiStatusConstants.success,
-          isLoading: false,
-        })
+        // Update user posts in the context
+        updateUserPosts([...modifiedUserPosts])
+        updateApiStatus(apiStatusConstants.success)
       } else {
-        this.setState({isLoading: false, apiStatus: apiStatusConstants.failure})
+        updateApiStatus(apiStatusConstants.failure)
       }
     } catch (e) {
-      this.setState({isLoading: false, apiStatus: apiStatusConstants.failure})
-      console.log('user stories fetch error', e)
+      updateApiStatus(apiStatusConstants.failure)
+      console.log('user posts fetch error', e)
     } finally {
-      this.setState({isLoading: false})
+      updateIsLoading(false)
     }
   }
 
-  renderStories = () => {
-    const {userStories, isLoading} = this.state
+  // Fetch user stories and user posts on component mount
+  useEffect(() => {
+    fetchUserStories()
+    fetchUserPosts()
+  }, [])
+
+  // Render the user stories
+  const renderStories = () => {
+    if (isLoading === true) {
+      return (
+        <div className="stories-bg-container">
+          <RenderLoader isLoading={isLoading} />
+        </div>
+      )
+    }
     return (
-      <>
-        {isLoading === true ? (
-          <div className="stories-bg-container">
-            <RenderLoader isLoading={isLoading} />
-          </div>
-        ) : (
-          <div className="stories-bg-container">
-            {userStories?.length > 0 && (
-              <ReactSlick userStories={userStories} />
-            )}
-          </div>
-        )}
-      </>
+      <div className="stories-bg-container">
+        {userStories?.length > 0 && <ReactSlick userStories={userStories} />}
+      </div>
     )
   }
 
-  renderUserPosts = () => {
-    const {userPosts, apiStatus, isLoading} = this.state
-
+  // Render the user posts
+  const renderUserPosts = () => {
     switch (apiStatus) {
       case apiStatusConstants.inProgress:
         return (
@@ -138,17 +141,33 @@ class Home extends Component {
         )
       case apiStatusConstants.success:
         return (
-          <ul className="posts-bg-container">
-            {userPosts.map(eachPostDetails => (
-              <Link
-                key={eachPostDetails.postId}
-                to={`/users/${eachPostDetails.userId}`}
-                style={{textDecoration: 'none'}}
-              >
-                <PostDetails eachPostDetails={eachPostDetails} />
-              </Link>
-            ))}
-          </ul>
+          <>
+            {userPosts?.length > 0 ? (
+              <ul className="posts-bg-container">
+                {userPosts.map(eachPostDetails => (
+                  <Link
+                    key={eachPostDetails.postId}
+                    to={`/users/${eachPostDetails.userId}`}
+                    style={{textDecoration: 'none'}}
+                  >
+                    <PostDetails eachPostDetails={eachPostDetails} />
+                  </Link>
+                ))}
+              </ul>
+            ) : (
+              <div className="home-no-posts-view">
+                <img
+                  className="home-no-posts-view-image"
+                  alt="search not found"
+                  src="https://res.cloudinary.com/v45/image/upload/v1689575508/instaShareProject/searchNotFoundRoute/Group_w4uaxt.jpg"
+                />
+                <h1 className="home-no-posts-view-heading">Search Not Found</h1>
+                <p className="home-no-posts-view-description">
+                  Try different keyword or search again
+                </p>
+              </div>
+            )}
+          </>
         )
       case apiStatusConstants.failure:
         return (
@@ -166,23 +185,20 @@ class Home extends Component {
             </Link>
           </div>
         )
-
       default:
         return null
     }
   }
 
-  render() {
-    return (
-      <>
-        <Header />
-        <div className="home-bg-container">
-          {this.renderStories()}
-          {this.renderUserPosts()}
-        </div>
-      </>
-    )
-  }
+  return (
+    <>
+      <Header />
+      <div className="home-bg-container">
+        {renderStories()}
+        {renderUserPosts()}
+      </div>
+    </>
+  )
 }
 
 export default Home

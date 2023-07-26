@@ -11,15 +11,27 @@ import PageNotFound from './components/PageNotFound/index'
 
 const App = () => {
   const [userPosts, setUserPosts] = React.useState([])
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [apiStatus, setApiStatus] = React.useState('')
 
   const updateUserPosts = arr => {
     setUserPosts([...arr])
+  }
+  const updateIsLoading = bool => {
+    setIsLoading(bool)
+  }
+  const updateApiStatus = status => {
+    setApiStatus(status)
   }
   return (
     <UserPostsContext.Provider
       value={{
         userPosts,
         updateUserPosts,
+        isLoading,
+        updateIsLoading,
+        apiStatus,
+        updateApiStatus,
       }}
     >
       <Switch>
