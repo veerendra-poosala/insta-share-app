@@ -9,7 +9,7 @@
   justify-content: space-between;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 1020px) {
   .header-nav-container {
     padding-left: 150px;
     padding-right: 100px;
@@ -57,7 +57,7 @@
 .options-list-for-large-devices {
   display: none;
 }
-@media screen and (min-width: 576px) {
+@media screen and (min-width: 768px) {
   .options-list-for-large-devices {
     display: flex;
     align-items: center;
@@ -153,7 +153,7 @@
   justify-content: center;
   align-items: center;
 }
-@media screen and (min-width: 576px) {
+@media screen and (min-width: 768px) {
   .options-list-for-small-device {
     display: none;
   }

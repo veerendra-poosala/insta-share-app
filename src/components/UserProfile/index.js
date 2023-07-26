@@ -1,14 +1,14 @@
 import Cookies from 'js-cookie'
-import {Link} from 'react-router-dom'
 import {Component} from 'react'
+import {Link} from 'react-router-dom'
 // import {Redirect} from 'react-router-dom'
 import Header from '../Header/index'
 import {apiStatusConstants} from '../Home/index'
 import {RenderLoader, PrimaryButton} from '../Extras'
 import ProfileDetails from '../ProfileDetails'
-import './index.css'
+import '../Profile/index.css'
 
-class Profile extends Component {
+class UserProfile extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -26,7 +26,10 @@ class Profile extends Component {
     try {
       this.setState({isLoading: true, apiStatus: apiStatusConstants.inProgress})
       const token = Cookies.get('jwt_token')
-      const url = 'https://apis.ccbp.in/insta-share/my-profile'
+      const {match} = this.props
+      const userId = match.params.id
+
+      const url = `https://apis.ccbp.in/insta-share/users/${userId}`
       const options = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -38,16 +41,16 @@ class Profile extends Component {
 
       if (response.ok) {
         const formattedMyProfileData = {
-          id: data?.profile.id,
-          followingCount: data?.profile.following_count,
-          followersCount: data?.profile.followers_count,
-          posts: data?.profile.posts,
-          postsCount: data?.profile.posts_count,
-          profilePic: data?.profile.profile_pic,
-          stories: data?.profile.stories,
-          userBio: data?.profile.user_bio,
-          userId: data?.profile.user_id,
-          userName: data?.profile.user_name,
+          id: data?.user_details.id,
+          followingCount: data?.user_details.following_count,
+          followersCount: data?.user_details.followers_count,
+          posts: data?.user_details.posts,
+          postsCount: data?.user_details.posts_count,
+          profilePic: data?.user_details.profile_pic,
+          stories: data?.user_details.stories,
+          userBio: data?.user_details.user_bio,
+          userId: data?.user_details.user_id,
+          userName: data?.user_details.user_name,
         }
 
         this.setState({
@@ -68,7 +71,8 @@ class Profile extends Component {
 
   render() {
     const {isLoading, apiStatus, myProfileDetails} = this.state
-
+    const {match} = this.props
+    const {id} = match.params
     switch (apiStatus) {
       case apiStatusConstants.inProgress:
         return (
@@ -101,7 +105,7 @@ class Profile extends Component {
               <h1 className="profile-failure-view-text">
                 Something went wrong. Please try again
               </h1>
-              <Link to="/profile" style={{textDecoration: 'none'}}>
+              <Link to={`/users/${id}`} style={{textDecoration: 'none'}}>
                 <PrimaryButton type="button">Try Again</PrimaryButton>
               </Link>
             </div>
@@ -113,4 +117,4 @@ class Profile extends Component {
   }
 }
 
-export default Profile
+export default UserProfile

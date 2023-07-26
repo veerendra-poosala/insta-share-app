@@ -1,15 +1,15 @@
 import Cookies from 'js-cookie'
 import {Component} from 'react'
-import {Redirect} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import Slider from 'react-slick'
-
 import Header from '../Header/index'
-import {RenderLoader} from '../Extras'
+import {RenderLoader, PrimaryButton} from '../Extras'
 import ReactSlick from '../ReactSlick'
 import './index.css'
 import PostDetails from '../PostDetails'
+import '../Profile/index.css'
 
-const apiStatusConstants = {
+export const apiStatusConstants = {
   initial: 'INITIAL',
   inProgress: 'IN_PROGRESS',
   success: 'SUCCESS',
@@ -140,23 +140,39 @@ class Home extends Component {
         return (
           <ul className="posts-bg-container">
             {userPosts.map(eachPostDetails => (
-              <PostDetails
+              <Link
                 key={eachPostDetails.postId}
-                eachPostDetails={eachPostDetails}
-              />
+                to={`/users/${eachPostDetails.userId}`}
+                style={{textDecoration: 'none'}}
+              >
+                <PostDetails eachPostDetails={eachPostDetails} />
+              </Link>
             ))}
           </ul>
         )
       case apiStatusConstants.failure:
-        return <h1>Failure</h1>
+        return (
+          <div className="profile-failure-view-bg-container">
+            <img
+              className="profile-failure-view-image"
+              alt="failure-view"
+              src="https://res.cloudinary.com/v45/image/upload/v1690384555/alert-triangle_vzl7rv.jpg"
+            />
+            <h1 className="profile-failure-view-text">
+              Something went wrong. Please try again
+            </h1>
+            <Link to="/" style={{textDecoration: 'none'}}>
+              <PrimaryButton type="button">Try Again</PrimaryButton>
+            </Link>
+          </div>
+        )
+
       default:
         return null
     }
   }
 
   render() {
-    const {userPosts} = this.state
-    // console.log(userPosts)
     return (
       <>
         <Header />

@@ -10,7 +10,14 @@ import 'reactjs-popup/dist/index.css'
 import './index.css'
 import {PrimaryButton} from '../Extras'
 
-const options = {
+const apiStatusConstants = {
+  initial: 'INITIAL',
+  inProgress: 'IN_PROGRESS',
+  success: 'SUCCESS',
+  failure: 'FAILURE',
+}
+
+const menuOptions = {
   home: 'Home',
   profile: 'Profile',
   search: 'Search',
@@ -24,16 +31,69 @@ const Header = props => {
   }
 
   const location = useLocation()
-  const [searchValue, setSearchValue] = useState('')
+  const [searchInput, setSearchInput] = useState('')
   const [activeOption, setActiveOption] = useState('')
   const [searchToggle, setSearchToggle] = useState(false)
   const [modalMenuOptions, setModalMenuOptions] = useState(
-    location.pathname === '/' ? options.home : options.profile,
+    location.pathname === '/' ? menuOptions.home : menuOptions.profile,
   )
+  const [isLoading, setIsLoading] = useState(false)
+  const [apiStatus, setApiStatus] = useState(apiStatusConstants.initial)
+  const [userPosts, setUserPosts] = useState([])
 
   const onChangeSearchCaption = event => {
     // console.log(event.target.value)
-    setSearchValue(event.target.value)
+    setSearchInput(event.target.value)
+  }
+
+  const fetchUserPosts = async () => {
+    try {
+      setIsLoading({isLoading: true})
+      setApiStatus({apiStatus: apiStatusConstants.inProgress})
+      const token = Cookies.get('jwt_token')
+      const url = `https://apis.ccbp.in/insta-share/posts?search=${searchInput}`
+      const options = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        method: 'GET',
+      }
+      const response = await fetch(url, options)
+      const data = await response.json()
+
+      if (response.ok) {
+        const modifiedUserPosts = data?.posts?.map(eachPost => ({
+          comments: eachPost.comments,
+          createdAt: eachPost.created_at,
+          likesCount: eachPost.likes_count,
+          postDetails: eachPost.post_details,
+          postId: eachPost.post_id,
+          profilePic: eachPost.profile_pic,
+          userId: eachPost.user_id,
+          userName: eachPost.user_name,
+        }))
+
+        console.log('user posts', modifiedUserPosts)
+        setUserPosts({
+          userPosts: [...modifiedUserPosts],
+        })
+
+        setApiStatus({apiStatus: apiStatusConstants.success})
+
+        setIsLoading({isLoading: false})
+      } else {
+        setApiStatus({apiStatus: apiStatusConstants.failure})
+
+        setIsLoading({isLoading: false})
+      }
+    } catch (e) {
+      setApiStatus({apiStatus: apiStatusConstants.failure})
+
+      setIsLoading({isLoading: false})
+      console.log('user stories fetch error', e)
+    } finally {
+      setIsLoading({isLoading: false})
+    }
   }
 
   const onClickSetActiveOption = event => {
@@ -44,9 +104,9 @@ const Header = props => {
   useEffect(() => {
     const path = location.pathname
     if (path === '/') {
-      setActiveOption(options.home)
+      setActiveOption(menuOptions.home)
     } else if (path === '/profile') {
-      setActiveOption(options.profile)
+      setActiveOption(menuOptions.profile)
     } else {
       setActiveOption('')
     }
@@ -71,11 +131,15 @@ const Header = props => {
               type="search"
               className="search-input-element"
               placeholder="Search Caption"
-              value={searchValue}
+              value={searchInput}
               onChange={onChangeSearchCaption}
               data-testid="searchIcon"
             />
-            <button className="search-button" type="button">
+            <button
+              className="search-button"
+              type="button"
+              onClick={fetchUserPosts}
+            >
               <FaSearch className="search-icon" />
             </button>
           </li>
@@ -87,12 +151,12 @@ const Header = props => {
             >
               <p
                 className={
-                  activeOption === options.home
+                  activeOption === menuOptions.home
                     ? 'option-text active-option'
                     : 'option-text'
                 }
               >
-                {options.home}
+                {menuOptions.home}
               </p>
             </Link>
           </li>
@@ -104,12 +168,12 @@ const Header = props => {
             >
               <p
                 className={
-                  activeOption === options.profile
+                  activeOption === menuOptions.profile
                     ? 'option-text active-option'
                     : 'option-text'
                 }
               >
-                {options.profile}
+                {menuOptions.profile}
               </p>
             </Link>
           </li>
@@ -127,9 +191,6 @@ const Header = props => {
           <Popup
             menu
             position="bottom right"
-            // offsetX="100%"
-            // nested
-            // on="hover"
             contentStyle={{
               padding: '0px',
               border: 'none',
@@ -158,54 +219,54 @@ const Header = props => {
                     <li className="option-item-container">
                       <Link
                         onClick={() => {
-                          setModalMenuOptions(options.home)
+                          setModalMenuOptions(menuOptions.home)
                         }}
                         className="link-container"
                         to="/"
                       >
                         <p
                           className={
-                            modalMenuOptions === options.home
+                            modalMenuOptions === menuOptions.home
                               ? 'option-text active-option'
                               : 'option-text'
                           }
                         >
-                          {options.home}
+                          {menuOptions.home}
                         </p>
                       </Link>
                     </li>
                     <li
                       className="option-item-container"
                       onClick={() => {
-                        setModalMenuOptions(options.search)
+                        setModalMenuOptions(menuOptions.search)
                       }}
                     >
                       <p
                         className={
-                          modalMenuOptions === options.search
+                          modalMenuOptions === menuOptions.search
                             ? 'option-text active-option'
                             : 'option-text'
                         }
                       >
-                        {options.search}
+                        {menuOptions.search}
                       </p>
                     </li>
                     <li className="option-item-container">
                       <Link
                         onClick={() => {
-                          setModalMenuOptions(options.profile)
+                          setModalMenuOptions(menuOptions.profile)
                         }}
                         className="link-container"
                         to="/profile"
                       >
                         <p
                           className={
-                            modalMenuOptions === options.profile
+                            modalMenuOptions === menuOptions.profile
                               ? 'option-text active-option'
                               : 'option-text'
                           }
                         >
-                          {options.profile}
+                          {menuOptions.profile}
                         </p>
                       </Link>
                     </li>
@@ -229,13 +290,13 @@ const Header = props => {
                       </button>
                     </li>
                   </ul>
-                  {modalMenuOptions === options.search && (
+                  {modalMenuOptions === menuOptions.search && (
                     <div className="option-item-container search-mini-width search-element-container">
                       <input
                         type="search"
                         className="search-input-element"
                         placeholder="Search Caption"
-                        value={searchValue}
+                        value={searchInput}
                         onChange={onChangeSearchCaption}
                         data-testid="searchIcon"
                       />

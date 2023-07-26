@@ -13,28 +13,29 @@ const ReactSlick = props => {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 8,
+    // variableWidth: true,
+    slidesToShow: userStories?.length >= 8 ? 8 : userStories?.length,
     slidesToScroll: 1,
     className: 'slick-container',
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 6,
+          slidesToShow: userStories?.length >= 6 ? 6 : userStories?.length,
           slidesToScroll: 1,
         },
       },
       {
         breakpoint: 600,
         settings: {
-          slidesToShow: 5,
+          slidesToShow: userStories?.length >= 4 ? 4 : userStories?.length,
           slidesToScroll: 1,
         },
       },
       {
         breakpoint: 480,
         settings: {
-          slidesToShow: 5,
+          slidesToShow: userStories?.length >= 4 ? 4 : userStories?.length,
           slidesToScroll: 1,
         },
       },
@@ -43,7 +44,7 @@ const ReactSlick = props => {
   return (
     <Slider {...settings}>
       {userStories.map(story => {
-        const {storyUrl, userId, userName} = story
+        const {storyUrl, userId} = story
         return (
           <div className="slick-item" key={userId}>
             <img className="logo-image" src={storyUrl} alt="company logo" />
