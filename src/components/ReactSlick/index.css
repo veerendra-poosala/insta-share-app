@@ -1,0 +1,68 @@
+.slider-bg-container {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+  padding-left: 24px;
+}
+@media screen and (min-width: 768px) {
+  .slider-bg-container {
+    padding-left: 200px;
+  }
+}
+
+.slick-item {
+  width: 60px !important;
+  height: 60px;
+  margin-right: 24px;
+}
+
+.slick-container {
+  width: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  min-width: 300px;
+  max-width: 300px;
+  margin-top: 10px;
+}
+@media screen and (min-width: 576px) {
+  .slick-container {
+    max-width: 500px;
+  }
+}
+@media screen and (min-width: 768px) {
+  .slick-container {
+    max-width: 550px;
+  }
+}
+@media screen and (min-width: 1020px) {
+  .slick-container {
+    max-width: 780px;
+  }
+}
+
+.logo-image {
+  margin: 0px 10px;
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+}
+
+/* You can change the CSS color to style the Next and 
+Previous Arrow buttons according to your project */
+
+.slick-prev:before,
+.slick-next:before {
+  color: black;
+}
+
+.slick-user-name {
+  color: #262626;
+  text-align: center;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 171.429% */
+}
