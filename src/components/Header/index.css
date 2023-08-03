@@ -34,7 +34,9 @@
   align-items: center;
   text-decoration: none;
 }
-
+.search-link-container {
+  height: 100%;
+}
 .header-website-logo {
   width: 36px;
   height: 20px;

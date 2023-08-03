@@ -15,6 +15,7 @@
   width: 60px !important;
   height: 60px;
   margin-right: 24px;
+  list-style-type: none;
 }
 
 .slick-container {
@@ -40,6 +41,12 @@
   .slick-container {
     max-width: 780px;
   }
+}
+
+.slick-items-list-container {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
 }
 
 .logo-image {

@@ -25,7 +25,7 @@ export const PrimaryButton = props => {
       type={type === 'submit' ? 'submit' : 'button'}
       onClick={actionOnClick !== undefined ? callActionOnClick : null}
     >
-      <p className="button-text">{children}</p>
+      {children}
     </button>
   )
 }

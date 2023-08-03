@@ -2,60 +2,22 @@ import {Component} from 'react'
 import Cookies from 'js-cookie'
 import {Link} from 'react-router-dom'
 import {apiStatusConstants, PrimaryButton, RenderLoader} from '../Extras'
-import ReactSlick from '../ReactSlick'
 import PostDetails from '../PostDetails'
 import Header from '../Header'
 import './index.css'
 
-class Home extends Component {
+class Search extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isLoading: true,
+      isLoading: false,
       apiStatus: apiStatusConstants.initial,
-      userStories: [],
       userPosts: [],
     }
   }
 
   componentDidMount() {
-    this.fetchUserStories()
     this.fetchUserPosts()
-  }
-
-  fetchUserStories = async () => {
-    try {
-      this.setState({isLoading: true})
-      const token = Cookies.get('jwt_token')
-      const url = 'https://apis.ccbp.in/insta-share/stories'
-      const options = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        method: 'GET',
-      }
-
-      const response = await fetch(url, options)
-      const data = await response.json()
-
-      if (response.ok) {
-        const modifiedUserStories = data?.users_stories?.map(story => ({
-          storyUrl: story?.story_url,
-          userId: story?.user_id,
-          userName: story?.user_name,
-        }))
-
-        // Update user stories in the context
-        // Assuming you have the relevant function to update userStories in your context.
-
-        this.setState({isLoading: false, userStories: [...modifiedUserStories]})
-      } else {
-        this.setState({isLoading: false})
-      }
-    } catch (e) {
-      this.setState({isLoading: false})
-      console.log('user stories fetch error', e)
-    }
   }
 
   fetchUserPosts = async () => {
@@ -63,7 +25,13 @@ class Home extends Component {
       this.setState({isLoading: true, apiStatus: apiStatusConstants.inProgress})
 
       const token = Cookies.get('jwt_token')
-      const url = 'https://apis.ccbp.in/insta-share/posts'
+      const {match} = this.props
+      let {text} = match.params
+      // console.log('text', text)
+      if (text === 'undefined') {
+        text = ''
+      }
+      const url = `https://apis.ccbp.in/insta-share/posts?search=${text}`
       const options = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -104,25 +72,18 @@ class Home extends Component {
   }
 
   // Render the user stories
-  renderStories = () => {
-    const {isLoading, userStories} = this.state
-    if (isLoading === true) {
-      return (
-        <div className="stories-bg-container">
-          <RenderLoader isLoading={isLoading} />
-        </div>
-      )
-    }
-    return (
-      <div className="stories-bg-container">
-        {userStories?.length > 0 && <ReactSlick userStories={userStories} />}
-      </div>
-    )
-  }
 
   renderUserPosts = () => {
     const {userPosts, isLoading, apiStatus} = this.state
     switch (apiStatus) {
+      case apiStatusConstants.initial:
+        return (
+          isLoading && (
+            <div className="loader-bg-container">
+              <RenderLoader isLoading={isLoading} />
+            </div>
+          )
+        )
       case apiStatusConstants.inProgress:
         return (
           isLoading && (
@@ -184,7 +145,7 @@ class Home extends Component {
       <>
         <Header />
         <div className="home-bg-container">
-          {this.renderStories()}
+          <h1 className="search-results-heading">Search Results</h1>
           {this.renderUserPosts()}
         </div>
       </>
@@ -192,4 +153,4 @@ class Home extends Component {
   }
 }
 
-export default Home
+export default Search

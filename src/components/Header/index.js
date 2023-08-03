@@ -39,60 +39,26 @@ const Header = props => {
     setSearchInput(event.target.value)
   }
 
-  /* 
-  const fetchUserPosts = async () => {
-    try {
-      updateIsLoading(true)
-      updateApiStatus(apiStatusConstants.inProgress)
-      const token = Cookies.get('jwt_token')
-      const url = `https://apis.ccbp.in/insta-share/posts?search=${searchInput}`
-      const options = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        method: 'GET',
-      }
-
-      const response = await fetch(url, options)
-      const data = await response.json()
-
-      if (response.ok) {
-        const modifiedUserPosts = data?.posts?.map(eachPost => ({
-          comments: eachPost.comments,
-          createdAt: eachPost.created_at,
-          likesCount: eachPost.likes_count,
-          postDetails: eachPost.post_details,
-          postId: eachPost.post_id,
-          profilePic: eachPost.profile_pic,
-          userId: eachPost.user_id,
-          userName: eachPost.user_name,
-        }))
-
-        updateUserPosts([...modifiedUserPosts])
-        updateApiStatus(apiStatusConstants.success)
-      } else {
-        updateApiStatus(apiStatusConstants.failure)
-      }
-    } catch (e) {
-      updateApiStatus(apiStatusConstants.failure)
-      console.log('user posts fetch error', e)
-    } finally {
-      updateIsLoading(false)
-    }
-  }
-
-  */
-
   const onClickSetActiveOption = event => {
     const selectedOption = event.target.textContent
     setActiveOption(selectedOption)
+  }
+
+  const navToSearch = () => {
+    const text = searchInput
+    setSearchInput('')
+    const {history} = props
+    if (text === '') {
+      return history.push('/search/undefined')
+    }
+    return history.push(`/search/${text}`)
   }
 
   useEffect(() => {
     const path = location.pathname
     if (path === '/') {
       setActiveOption(menuOptions.home)
-    } else if (path === '/profile') {
+    } else if (path === '/my-profile') {
       setActiveOption(menuOptions.profile)
     } else {
       setActiveOption('')
@@ -136,9 +102,14 @@ const Header = props => {
                 placeholder="Search Caption"
                 value={searchInput}
                 onChange={onChangeSearchCaption}
-                data-testid="searchIcon"
               />
-              <button className="search-button" type="button">
+
+              <button
+                className="search-button"
+                data-testid="searchIcon"
+                type="button"
+                onClick={navToSearch}
+              >
                 <FaSearch className="search-icon" />
               </button>
             </li>
@@ -155,7 +126,7 @@ const Header = props => {
                       : 'option-text'
                   }
                 >
-                  {menuOptions.home}
+                  Home
                 </p>
               </Link>
             </li>
@@ -163,7 +134,7 @@ const Header = props => {
               <Link
                 onClick={onClickSetActiveOption}
                 className="link-container"
-                to="/profile"
+                to="/my-profile"
               >
                 <p
                   className={
@@ -172,7 +143,7 @@ const Header = props => {
                       : 'option-text'
                   }
                 >
-                  {menuOptions.profile}
+                  Profile
                 </p>
               </Link>
             </li>
@@ -220,7 +191,7 @@ const Header = props => {
                       : 'option-text'
                   }
                 >
-                  {menuOptions.home}
+                  Home
                 </p>
               </Link>
             </li>
@@ -246,7 +217,7 @@ const Header = props => {
                   setModalMenuOptions(menuOptions.profile)
                 }}
                 className="link-container"
-                to="/profile"
+                to="/my-profile"
               >
                 <p
                   className={
@@ -255,7 +226,7 @@ const Header = props => {
                       : 'option-text'
                   }
                 >
-                  {menuOptions.profile}
+                  Profile
                 </p>
               </Link>
             </li>
@@ -292,11 +263,19 @@ const Header = props => {
                 placeholder="Search Caption"
                 value={searchInput}
                 onChange={onChangeSearchCaption}
-                data-testid="searchIcon"
               />
-              <button className="search-button" type="button">
-                <FaSearch className="search-icon" />
-              </button>
+              <Link
+                className="link-container search-link-container"
+                to={`/search/${searchInput}`}
+              >
+                <button
+                  data-testid="searchIcon"
+                  className="search-button"
+                  type="button"
+                >
+                  <FaSearch className="search-icon" />
+                </button>
+              </Link>
             </div>
           )}
         </div>

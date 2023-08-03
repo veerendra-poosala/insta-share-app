@@ -1,0 +1,226 @@
+.profile-details-bg-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-left: 24px;
+  margin-top: 28px;
+}
+@media screen and (min-width: 1020px) {
+  .profile-details-bg-container {
+    padding-left: 200px;
+    padding-right: 100px;
+  }
+}
+.profile-bio-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+@media screen and (min-width: 768px) {
+  .profile-bio-container {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+.user-profile-pic-container {
+  display: flex;
+}
+
+.user-profile-pic {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  margin-right: 30px;
+}
+@media screen and (min-width: 768px) {
+  .user-profile-pic {
+    width: 180px;
+    height: 180px;
+    margin-right: 64px;
+  }
+}
+.profile-bio {
+  display: flex;
+  flex-direction: column;
+}
+.profile-bio > * {
+  padding: 2px;
+  margin: 2px;
+}
+.username {
+  color: #262626;
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 24px; /* 150% */
+}
+@media screen and (min-width: 768px) {
+  .username {
+    font-size: 32px;
+    line-height: 32px; /* 100% */
+  }
+}
+.user-stats-container {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+  width: auto;
+  max-width: 60%;
+}
+.user-stats-text {
+  color: #262626;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  margin-right: 4px;
+}
+.user-stats {
+  font-weight: 500;
+}
+@media screen and (min-width: 768px) {
+  .user-stats-text {
+    font-size: 16px;
+  }
+}
+.username-small {
+  color: #262626;
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px; /* 150% */
+  margin-top: 12px;
+}
+@media screen and (min-width: 768px) {
+  .username-small {
+    margin-top: 0px;
+  }
+}
+.bio-text {
+  color: #262626;
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
+}
+
+.user-stats-small {
+  display: flex;
+  width: 170px;
+}
+@media screen and (min-width: 768px) {
+  .user-stats-small {
+    display: none;
+  }
+}
+.user-stats-large {
+  display: none;
+}
+@media screen and (min-width: 768px) {
+  .user-stats-large {
+    display: flex;
+  }
+}
+.profile-stories-bg-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+}
+.horizontal-rule {
+  width: 100%;
+  height: 1px;
+  background: #c6c6c8;
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+.user-profile-posts-preview-bg-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.user-profile-posts-preview-bg-container > * {
+  padding: 2px;
+  margin: 2px;
+}
+.user-profile-posts-preview-preview-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.user-profile-posts-preview-preview-container > * {
+  padding: 2px;
+  margin: 2px;
+}
+.user-profile-posts-preview-icon-container {
+  display: flex;
+  align-items: center;
+}
+
+.user-profile-posts-preview-icon-container > * {
+  padding: 2px;
+  margin: 2px;
+}
+
+.user-profile-post-grid-icon {
+  font-size: 24px;
+  margin-right: 8px;
+}
+
+.user-profile-posts-preview-text {
+  color: #262626;
+  font-family: Roboto;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 32px; /* 133.333% */
+}
+.user-profile-post-images-preview {
+  padding-left: 0px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  padding-bottom: 96px;
+}
+.user-profile-image-item-container {
+  list-style-type: none;
+
+  margin-right: 24px;
+  margin-bottom: 24px;
+}
+.user-profile-post-image {
+  min-width: 280px;
+  max-width: 280px;
+  min-height: 280px;
+  max-height: 280px;
+}
+.user-profile-no-posts-view {
+  width: 100%;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.user-profile-no-posts-text {
+  color: #262626;
+  font-family: Roboto;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 48px; /* 150% */
+}
+.user-profile-camera-bg-container {
+  width: 68px;
+  height: 68px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  border: 3px solid #262626;
+}

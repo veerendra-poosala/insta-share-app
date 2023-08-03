@@ -73,11 +73,7 @@ const PostDetails = props => {
 
   return (
     <li className="post-item-bg-container">
-      <Link
-        key={eachPostDetails.postId}
-        to={`/users/${userId}`}
-        style={{textDecoration: 'none'}}
-      >
+      <Link to={`/users/${userId}`} style={{textDecoration: 'none'}}>
         <div className="post-profile-pic-container">
           <img
             className="post-profile-pic"

@@ -7,21 +7,28 @@ import Slider from 'react-slick'
 import './index.css'
 
 const ReactSlick = props => {
-  const {userStories} = props
-
+  const {userStories, profile} = props
+  // console.log('profile', profile)
   const settings = {
     dots: false,
     infinite: false,
     speed: 500,
     // variableWidth: true,
-    slidesToShow: userStories?.length >= 8 ? 8 : userStories?.length,
+    slidesToShow: userStories?.length >= 7 ? 7 : userStories?.length,
     slidesToScroll: 1,
     className: 'slick-container',
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: userStories?.length >= 6 ? 6 : userStories?.length,
+          slidesToShow: userStories?.length >= 7 ? 7 : userStories?.length,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 720,
+        settings: {
+          slidesToShow: userStories?.length >= 4 ? 4 : userStories?.length,
           slidesToScroll: 1,
         },
       },
@@ -42,18 +49,29 @@ const ReactSlick = props => {
     ],
   }
   return (
-    <Slider {...settings}>
-      {userStories.map(story => {
-        const {storyUrl, userName, userId} = story
+    <ul className="slick-items-list-container">
+      <Slider {...settings}>
+        {userStories.map(story => {
+          if (profile === undefined) {
+            const {storyUrl, userName, userId} = story
 
-        return (
-          <li className="slick-item" key={userId}>
-            <img className="logo-image" src={storyUrl} alt="company logo" />
-            <p className="slick-user-name">{userName}</p>
-          </li>
-        )
-      })}
-    </Slider>
+            return (
+              <li className="slick-item" key={userId}>
+                <img className="logo-image" src={storyUrl} alt="company logo" />
+                <p className="slick-user-name">{userName}</p>
+              </li>
+            )
+          }
+          const {storyUrl, userId} = story
+
+          return (
+            <li className="slick-item" key={userId}>
+              <img className="logo-image" src={storyUrl} alt="company logo" />
+            </li>
+          )
+        })}
+      </Slider>
+    </ul>
   )
 }
 
